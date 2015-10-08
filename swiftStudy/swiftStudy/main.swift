@@ -70,6 +70,82 @@ func chapter2() {
     
 }
 
-chapter2()
+//Strings and Characters
+func chapter3() {
+    //Strings Are Value Types
+    //Swift 默认字符串拷贝的方式保证了在函数/方法中传递的是字符串的值。 
+    //很明显无论该值来自于哪里,都是您独 自拥有的。 您可以放心您传递的字符串本身不会被更改。
+    for character in "Dog!?😀😁😂".characters {//根据字符来遍历
+        print(character)
+    }
+    
+    
+    let string1 = "hello"
+    let string2 = " there"
+    var welcome = string1 + string2
+    let exclamationMark: Character = "!"
+    welcome.append(exclamationMark)//String 和 character不能直接相加
+    print(welcome)
+    
+    //Accessing and Modifying a String
+    let greeting = "Guten Tag!😀😁😂"
+    greeting[greeting.startIndex] //G
+    greeting[greeting.endIndex.predecessor()]//!
+    greeting[greeting.startIndex.successor()]//u
+    let index = greeting.startIndex.advancedBy(7)
+    print(greeting[index]) //a
+    
+    for index in greeting.characters.indices {//根据下标来遍历
+        print("\(greeting[index]) ", terminator: "")
+    }
+    
+    //Inserting and Removing
+    var welcome1 = "hello"
+    welcome1.insert("!", atIndex: welcome1.endIndex)//插入一个字符
+    welcome1.insertContentsOf("123456".characters, at: welcome1.endIndex)//插入一串字符
+    print(welcome1)
+    welcome1.removeAtIndex(welcome1.endIndex.predecessor())//移除一个
+    print(welcome1)
+    let range = welcome1.endIndex.advancedBy(-6) ..< welcome1.endIndex//移除一个范围的
+    welcome1.removeRange(range)
+    print(welcome1)
+    
+    //Comparing String
+    //String and character equality is checked with the “equal to” operator (==) and the “not equal to” operator (!=), as described in Comparison Operators
+    //prefix equality, and suffix equality
+    let romeoAndJuliet = [
+        "Act 1 Scene 1: Verona, A public place",
+        "Act 1 Scene 2: Capulet's mansion",
+        "Act 1 Scene 3: A room in Capulet's mansion",
+        "Act 1 Scene 4: A street outside Capulet's mansion",
+        "Act 1 Scene 5: The Great Hall in Capulet's mansion",
+        "Act 2 Scene 1: Outside Capulet's mansion",
+        "Act 2 Scene 2: Capulet's orchard",
+        "Act 2 Scene 3: Outside Friar Lawrence's cell",
+        "Act 2 Scene 4: A street in Verona",
+        "Act 2 Scene 5: Capulet's mansion",
+        "Act 2 Scene 6: Friar Lawrence's cell"
+    ]
+    var act1SceneCount = 0
+    for scene in romeoAndJuliet {
+        if scene.hasPrefix("Act 1 ") {
+            ++act1SceneCount
+        }
+    }
+    print("There are \(act1SceneCount) scenes in Act 1")
+    // prints "There are 5 scenes in Act 1"
+    var mansionCount = 0
+    var cellCount = 0
+    for scene in romeoAndJuliet {
+        if scene.hasSuffix("Capulet's mansion") {
+        ++mansionCount
+    } else if scene.hasSuffix("Friar Lawrence's cell") {
+        ++cellCount
+        }
+    }
+    print("\(mansionCount) mansion scenes; \(cellCount) cell scenes")
+}
+
+chapter3()
 
 
