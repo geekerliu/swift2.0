@@ -272,6 +272,76 @@ func chapter4() {
     print(airportNames)
 }
 
-chapter4()
+//MARK: Control Flow
+func chapter5() {
+    //For-In
+    for index in 1...5 {
+        print(index)
+    }
+    //遍历数组
+    let names = ["Anna", "Alex", "Brian", "Jack"]
+    for name in names {
+        print("Hello, \(name)!")
+    }
+    
+    //while
+    var index = 0
+    repeat {//与do while一样
+        index++
+    } while index < 5
+        
+    //switch
+    let someCharacter: Character = "e"
+    switch someCharacter {
+    case "a", "e", "i", "o", "u":
+        print("\(someCharacter) is a vowel")
+    case "b", "c", "d", "f", "g", "h", "j", "k", "l", "m",
+            "n", "p", "q", "r", "s", "t", "v", "w", "x", "y", "z":
+        print("\(someCharacter) is a consonant")
+    default:
+        print("\(someCharacter) is not a vowel or a consonant")
+    }
+    
+    //tuples
+    let somePoint = (1, 1)
+    switch somePoint {
+        case (0, 0):
+        print("(0, 0) is at the origin")
+        case (_, 0):
+        print("(\(somePoint.0), 0) is on the x-axis")
+        case (0, _):
+            print("(0, \(somePoint.1)) is on the y-axis")
+        case (-2...2, -2...2):
+            print("(\(somePoint.0), \(somePoint.1)) is inside the box")
+        default:
+            print("(\(somePoint.0), \(somePoint.1)) is outside of the box")
+    }
+    //Value Bindings
+    let anotherPoint = (0, 2)
+    switch anotherPoint {
+    case (let x, 0):
+        print("on the x-axis with an x value of \(x)")
+    case (0, let y):
+        print("on the y-axis with a y value of \(y)")
+    case let (x, y):
+        print("somewhere else at (\(x), \(y))")
+    }
+    //where
+    //A switch case can use a where clause to check for additional conditions
+    let yetAnotherPoint = (1, -1)
+    switch yetAnotherPoint {
+    case let (x, y) where x == y:
+        print("x == y")
+    case let (x, y) where x < y:
+        print("x < y")
+    case let(x, y) where x > y:
+        print("x > y")
+    }
+    
+    //Control Transfer Statements
+    //Labeled Statements continue和break都可以跳转到指定的标签
+}
+
+chapter5()
 
 
