@@ -6,7 +6,7 @@
 //  Copyright © 2015年 AppCoda. All rights reserved.
 //
 
-// Swift2.0学习：基础部本
+//MARK: Swift2.0学习：基础部本
 // Swift是一个类型安全的语言type safe
 // 类型推断type inference，当你没有显示的定义变量的类型时，Swift会自动推断变量的类型。
 func chapter1() {
@@ -44,7 +44,7 @@ func chapter1() {
     // assertion
 }
 
-// 基本运算符
+//MARK: 基本运算符
 func chapter2() {
     //1.赋值运算符
 //    let (x, y) = (1, 2)
@@ -70,7 +70,7 @@ func chapter2() {
     
 }
 
-//Strings and Characters
+//MARK: Strings and Characters
 func chapter3() {
     //Strings Are Value Types
     //Swift 默认字符串拷贝的方式保证了在函数/方法中传递的是字符串的值。 
@@ -146,6 +146,132 @@ func chapter3() {
     print("\(mansionCount) mansion scenes; \(cellCount) cell scenes")
 }
 
-chapter3()
+//MARK: Collection Types
+func chapter4() {
+    /*----------------array-------------------*/
+    var someInts = [Int]()
+    print("someInts is of type [Int] with \(someInts.count) items.")
+    someInts.append(3)
+    // someInts now contains 1 value of type Int
+    someInts = []
+    // someInts is now an empty array, but is still of type [Int]
+
+    //Creating an Array with a Default Value
+    var threeDoubles = [Double](count: 3, repeatedValue: 0.0)
+    //Creating an Array by Adding Two Arrays Together
+    var anotherThreeDoubles = [Double](count: 3, repeatedValue: 2.5)
+    var sixDoubles = threeDoubles + anotherThreeDoubles //使用加号将两个数组组合起来
+    
+    //Creating an Array with an Array Literal字面量的方式创建数组
+    var shoppingList = ["Eggs", "Milk"]
+    
+    //Accessing and Modifying an Array
+    print(shoppingList.count)
+    shoppingList.append("Flour")//添加一个元素
+    shoppingList += ["Baking Powder"]
+    shoppingList += ["Chocolate Spread", "Cheese", "Butter"]
+    shoppingList[4...6] = ["Bananas", "Apples"]//使用下标来修改
+    shoppingList.insert("Maple Syrup", atIndex: 0)//插入元素
+    let mapleSyrup = shoppingList.removeAtIndex(0)//移除某个元素，返回移除的元素
+    let apples = shoppingList.removeLast()//移除最后一个元素的简便方法
+        
+    for item in shoppingList {//两种遍历数组的方法
+        print(item)
+    }
+    
+    for (index, value) in shoppingList.enumerate() {
+        print("item \(index) = \(value)")
+    }
+        
+    /*----------------Sets-------------------*/
+    //A set stores distinct values of the same type in a collection with no defined ordering.
+    //All of Swift’s basic types (such as String, Int, Double, and Bool) are hashable by default,
+    //and can be used as set value types or dictionary key types.
+    var favoriteGenres: Set<String> = ["Rock", "Classical", "Hip hop"]//使用字面量的方式初始化set
+    //Accessing and Modifying a Set
+    print("I have \(favoriteGenres.count) favorite music genres.")
+    //remove a item
+    if let removedGenre = favoriteGenres.remove("Rock") {
+        print("\(removedGenre)? I'm over it.")
+    } else {
+        print("I never much cared for that.")
+    }
+        
+    //check whether a set contains a particular item
+    if favoriteGenres.contains("Funk") {
+        print("I get up on the good foot.")
+    } else {
+        print("It's too funky in here.")
+    }
+        
+    //Iterating(重复，迭代) Over a Set
+    for genre in favoriteGenres {
+        print("\(genre)")
+    }
+        
+    //有序的遍历set
+    for genre in favoriteGenres.sort() {
+        print("\(genre)")
+    }
+        
+    //Fundamental Set Operations
+    let oddDigits: Set = [1, 3, 5, 7, 9]
+    let evenDigits: Set = [0, 2, 4, 6, 8]
+    let singleDigitPrimeNumbers: Set = [2, 3, 5, 7]
+    
+    oddDigits.union(evenDigits).sort()//并集
+    // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    oddDigits.intersect(evenDigits).sort()//交集
+    // []
+    oddDigits.subtract(singleDigitPrimeNumbers).sort()//去除交集之外的oddDigits的类容
+    // [1, 9]
+    oddDigits.exclusiveOr(singleDigitPrimeNumbers).sort()//去除交集之外的两个的类容
+    // [1, 2, 9]
+        
+        
+    /*----------------Dictionaries-------------------*/
+    //A dictionary stores associations between keys of the same type and values of the same type in a collection with no defined ordering.
+    //Creating an Empty Dictionary
+    var namesOfIntegers = [Int: String]()//Dictionary<Key, Value>
+    namesOfIntegers[16] = "sixteen"
+    namesOfIntegers = [:]
+    //Creating a Dictionary with a Dictionary Literal
+    var airports: [String: String] = ["YYZ": "Toronto Pearson", "DUB": "Dublin"]
+    var airports1 = ["YYZ": "Toronto Pearson", "DUB": "Dublin"]
+    //Accessing and Modifying a Dictionary
+    airports["LHR"] = "London"//add a new
+    airports["LHR"] = "London Heathrow"// change the old value
+    //updateValue有旧值修改旧值并返回旧值，没有则添加新值返回nil
+    if let oldValue = airports.updateValue("Dublin Airport", forKey: "DUB") {
+        print("The old value for DUB was \(oldValue).")
+    }
+        
+    airports["APL"] = "Apple International"
+    airports["APL"] = nil //通过角标删除元素
+    //删除元素，有则删除并返回旧值，没有返回nil
+    if let removedValue = airports.removeValueForKey("DUB") {
+        print("The removed airport's name is \(removedValue).")
+    } else {
+        print("The airports dictionary does not contain a value for DUB.")
+    }
+    //Iterating Over a Dictionary
+    for (airportCode, airportName) in airports {
+        print("\(airportCode): \(airportName)")
+    }
+    for airportCode in airports.keys {
+        print(airportCode)
+    }
+    for airportName in airports.values {
+        print(airportName)
+    }
+        
+    //字典里面的key或values取出来放到一个数组里面
+    let airportCodes = [String](airports.keys)
+    let airportNames = [String](airports.values)
+    print(airportCodes)
+    print(airportNames)
+}
+
+chapter4()
 
 
