@@ -694,16 +694,84 @@ let Properties = {
         }
     }
 }
-Properties()
 
+//MARK: Methods
+class Counter {
+    var count = 0
+    func increment() {
+        ++count
+    }
+    //Swift treats amount as a local name only, but treats numberOfTimes as both a local and an external name.
+    func incrementBy(amount: Int, numberOfTimes: Int) {
+        count += amount * numberOfTimes
+    }
+    func reset() {
+        count = 0
+    }
+}
+let counter = Counter()
+counter.increment()
+counter.incrementBy(5, numberOfTimes: 5)
+counter.reset()
 
+//Modifying Value Types from Within Instance Methods
+struct Point {
+    var x = 0.0, y = 0.0
+    mutating func moveByX(deltaX: Double, y deltaY: Double) {
+        x += deltaX
+        y += deltaY
+    }
+}
+var somePoint = Point(x: 1.0, y: 1.0)
+somePoint.moveByX(2.0, y: 3.0)
+print("The point is now at (\(somePoint.x), \(somePoint.y))")
 
+//Assigning to self Within a Mutating Method
+enum TriStateSwitch {
+    case Off, Low, High
+    mutating func next() {
+        switch self {
+        case Off:
+            self = Low
+        case Low:
+            self = High
+        case High:
+            self = Off
+        }
+    }
+}
+var ovenLight = TriStateSwitch.Low
+ovenLight.next()// ovenLight is now equal to .High
+ovenLight.next()// ovenLight is now equal to .Off
 
+//Type Methods
+//You indicate type methods by writing the static keyword before the method’s func keyword.
+//Classes may also use the class keyword to allow subclasses to override the superclass’s implementation of that method.
+class SomeClass {
+    class func someTypeMethod() {
+        
+    }
+}
+SomeClass.someTypeMethod()
 
-
-
-
-
+struct LevelTracker {
+    static var highestUnlockedLevel = 1
+    static func unlockLevel(level: Int) {
+        if level > highestUnlockedLevel { highestUnlockedLevel = level }
+    }
+    static func levelIsUnlocked(level: Int) -> Bool {
+        return level <= highestUnlockedLevel
+    }
+    var currentLevel = 1
+    mutating func advanceToLevel(level: Int) -> Bool {
+        if LevelTracker.levelIsUnlocked(level) {
+            currentLevel = level
+            return true
+        } else {
+            return false
+        }
+    }
+}
 
 
 
