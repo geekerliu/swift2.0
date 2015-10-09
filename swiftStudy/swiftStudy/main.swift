@@ -488,17 +488,97 @@ incrementBySeven()
 
 //Autoclosures
 var customersInLine = ["Chris", "Alex", "Ewa", "Barry", "Daniella"]
-func serveCustomer(customerProvider: () -> String) {
+func serveCustomer(@autoclosure customerProvider: () -> String) {
     print("Now serving \(customerProvider())!")
 }
-serveCustomer({ customersInLine.removeAtIndex(0) })
+serveCustomer(customersInLine.removeAtIndex(0))//自动将参数转换为闭包
+//func serveCustomer(@autoclosure customerProvider: () -> String) {
+//    print("Now serving \(customerProvider())!")
+//}
+//serveCustomer({ customersInLine.removeAtIndex(0) })
 
+//MARK: Enumerations
+enum CompassPoint {
+    case North
+    case South
+    case East
+    case West
+}
+enum Planet {
+    case Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune
+}
+var directionToHead = CompassPoint.West
+directionToHead = .East//自动推断了类型
+//Associated Values
+enum Barcode {
+    case UPCA(Int, Int, Int, Int)
+    case QRCode(String)
+}
+var productBarcode = Barcode.UPCA(8, 85909, 51226, 3)
+productBarcode = .QRCode("ABCDEFG")
 
+switch productBarcode {
+case .UPCA(let numberSystem, let manufacturer, let product, let check):
+    print("UPC-A: \(numberSystem), \(manufacturer) \(product) \(check)")
+case .QRCode(let productCode):
+    print("QR code: \(productCode)")
+}
 
+switch productBarcode {
+case let .UPCA(numberSystem, manufacturer, product, check)://当所有的参数都是let的时候，可以简写
+    print("UPC-A: \(numberSystem), \(manufacturer) \(product) \(check)")
+case let .QRCode(productCode):
+    print("QR code: \(productCode)")
+}
+//Raw Values
+enum ASCIIControlCharacter: Character {
+    case Tab = "\t"
+    case LineFeed = "\n"
+    case CarriageReturn = "\r"
+}
+//implicity Assigned Raw Values默认分配原始值
+enum Planet1: Int {//不赋值默认从0开始
+    case Mercury = 1, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune
+}
+enum CompassPoint1: String {//原始值就是"North" "South" "East" "West"
+    case North, South, East, West
+}
 
+//access a raw value
+let earthsOrder = Planet1.Earth.rawValue
+let sunsetDirection = CompassPoint1.East.rawValue
+print("\(earthsOrder) \(sunsetDirection)")
 
+//Initializing from a Raw Value
+let possiblePlanet = Planet1(rawValue: 7)
 
-
+//Recursive Enumerations递归枚举
+enum ArithmeticExpression {
+    case Number(Int)
+    indirect case Addition(ArithmeticExpression, ArithmeticExpression)
+    indirect case Multiplication(ArithmeticExpression, ArithmeticExpression)
+}
+indirect enum ArithmeticExpression1 {//上面的简便写法
+    case Number(Int)
+    case Addition(ArithmeticExpression, ArithmeticExpression)
+    case Multiplication(ArithmeticExpression, ArithmeticExpression)
+}
+func evaluate(expression: ArithmeticExpression) -> Int {
+    switch expression {
+    case .Number(let value):
+        return value
+    case .Addition(let left, let right):
+        return evaluate(left) + evaluate(right)
+    case .Multiplication(let left, let right):
+        return evaluate(left) * evaluate(right)
+    }
+}
+//(5 + 4) * 2
+let five = ArithmeticExpression.Number(5)
+let four = ArithmeticExpression.Number(4)
+let sum = ArithmeticExpression.Addition(five, four)
+let product = ArithmeticExpression.Multiplication(sum, ArithmeticExpression.Number(2))
+print(evaluate(product))
 
 
 
