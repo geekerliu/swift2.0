@@ -612,7 +612,89 @@ if tenEighty === alsoTenEighty {
     print("tenEighty and alsoTenEighty refer to the same VideoMode instance.")
 }
 
-
+//MARK: Properties
+let Properties = {
+    //Stored Properties
+    struct FixedLengthRange {
+        var firstValue: Int
+        let length: Int
+    }
+    //Lazy Stored Properties,value is not calculated until the first time it is used. 
+    //变量才能定义为lazy，因为常量在定义的时候已经赋值了
+    class DataImporter {
+        var fileName = "data.txt"
+    }
+    class DataManager {
+        lazy var importer = DataImporter()
+        var data = [String]()
+    }
+    let manager = DataManager()
+    manager.data.append("Some data")
+    manager.data.append("Some more data")
+    print(manager.importer.fileName)//直到这里DataImporter的初始化方法才被调用
+    
+    //Computed Properties
+    struct Point {
+        var x = 0.0, y = 0.0
+    }
+    struct Size {
+        var width = 0.0, height = 0.0
+    }
+    struct Rect {
+        var origin = Point()
+        var size = Size()
+        var center: Point {
+            get {
+                let centerX = origin.x + (size.width / 2)
+                let centerY = origin.y + (size.height / 2)
+                return Point(x: centerX, y: centerY)
+            }
+//            set(newCenter) {
+//                origin.x = newCenter.x - (size.width / 2)
+//                origin.y = newCenter.y - (size.height / 2)
+//            }
+            set {//使用默认的newValue
+                origin.x = newValue.x - (size.width / 2)
+                origin.y = newValue.y - (size.height / 2)
+            }
+        }
+    }
+    var square = Rect(origin: Point(x: 0.0, y: 0.0),
+        size: Size(width: 10.0, height: 10.0))
+    let initialSquareCenter = square.center
+    square.center = Point(x: 15.0, y: 15.0)
+    print("square.origin is now at (\(square.origin.x), \(square.origin.y))")
+    //Read-Only Computed Properties
+    //A computed property with a getter but no setter is known as a read-only computed property.
+    //只有个get方法，且get可以省略
+    
+    //Property Observers
+    //Property observers are called every time a property’s value is set,
+    //even if the new value is the same as the property’s current value.
+    class StepCounter {
+        var totalSteps: Int = 0 {
+            willSet { //两个方法都可以对值进行控制，didSet设置的值会覆盖willSet设置的值
+                print("About to set totalSteps to \(newValue)")
+            }
+            didSet {
+                if totalSteps > oldValue {
+                    print("Add \(totalSteps - oldValue) steps")
+                }
+            }
+        }
+    }
+    let stepCounter = StepCounter()
+    stepCounter.totalSteps = 200
+    stepCounter.totalSteps = 360
+    //Type Properties, ----> static
+    struct SomeStructure {
+        static var storedTypeProperty = "Some value."
+        static var computedTypeProperty: Int {
+            return 1
+        }
+    }
+}
+Properties()
 
 
 
