@@ -580,6 +580,40 @@ let sum = ArithmeticExpression.Addition(five, four)
 let product = ArithmeticExpression.Multiplication(sum, ArithmeticExpression.Number(2))
 print(evaluate(product))
 
+//MARK: Classes and Structures
+struct Resolution {
+    var width = 0
+    var height = 0
+}
+
+class VideoMode {
+    var resolution = Resolution()
+    var interlaced = false
+    var frameRate = 0.0
+    var name: String?
+}
+//Memberwise Initializers for Structure Types,All structures have an automatically-generated memberwise initializer
+let vga = Resolution(width: 640, height: 480)
+//Structures and Enumerations Are Value Types 值传递
+//A value type is a type whose value is copied when it is assigned to a variable or constant, or when it is passed to a function.
+//Classes Are Reference Types 引用传递，引用的是同一个实例
+//Rather than a copy, a reference to the same existing instance is used instead.
+let tenEighty = VideoMode()
+tenEighty.resolution = vga
+tenEighty.interlaced = true
+tenEighty.name = "1080i"
+tenEighty.frameRate = 25.0
+let alsoTenEighty = tenEighty
+alsoTenEighty.frameRate = 30.0 //改变了原来的值
+print(tenEighty.frameRate)
+
+//Identity Operators ===, !== 用于判断是否是同一个实例
+if tenEighty === alsoTenEighty {
+    print("tenEighty and alsoTenEighty refer to the same VideoMode instance.")
+}
+
+
+
 
 
 
