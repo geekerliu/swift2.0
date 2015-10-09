@@ -432,4 +432,94 @@ while currentValue != 0 {
 }
 print("zero!")
 
+//MARK: Closures
+//Global and nested functions, as introduced in Functions, are actually special cases of closures. 
+let names = ["Chris", "Alex", "Ewa", "Barry", "Daniella"]
+// The sorting closure needs to return true if the first value should appear before the second value, and false otherwise.
+var reversed = names.sort { (s1: String, s2: String) -> Bool in return s1 > s2}
+//Inferring Type From Context因为是排序names所以可以自动推断出s1和s2的类型
+reversed = names.sort({s1, s2 in return s1 > s2})
+//只有一条语句的时候可以省略return
+reversed = names.sort( { s1, s2 in s1 > s2 } )
+//Shorthand Argument Names
+reversed = names.sort({$0 > $1})
+//Operator Functions
+reversed = names.sort(>)
+//Trailing Closures
+//If you need to pass a closure expression to a function 
+//as the function’s final argument and the closure expression is long,
+//it can be useful to write it as a trailing closure instead.
+reversed = names.sort() { $0 > $1 }
+reversed = names.sort { $0 > $1 }//闭包是函数的唯一参数，且使用了Trailing Closures可以省略括号
+
+let digitNames = [
+    0: "Zero", 1: "One", 2: "Two",   3: "Three", 4: "Four",
+    5: "Five", 6: "Six", 7: "Seven", 8: "Eight", 9: "Nine"
+]
+let numbers = [16, 58, 510]
+let strings = numbers.map {
+    (var number) -> String in
+    var output = ""
+    while number > 0 {
+        output = digitNames[number % 10]! + output
+        number /= 10
+    }
+    return output
+}
+print(strings)
+//Capturing Values
+func makeIncrementer(forIncrement amount: Int) -> () -> Int {
+    var runningTotal = 0
+    //nested捕获了包含它的函数的参数，和定义的变量
+    func incrementer() -> Int {
+        runningTotal += amount
+        return runningTotal
+    }
+    return incrementer
+}
+let incrementByTen = makeIncrementer(forIncrement: 10)
+incrementByTen()
+incrementByTen()
+let incrementBySeven = makeIncrementer(forIncrement: 7)
+incrementBySeven()
+//Closures Are Reference Types
+//Whenever you assign a function or a closure to a constant or a variable, 
+//you are actually setting that constant or variable to be a reference to the function or closure.
+
+//Autoclosures
+var customersInLine = ["Chris", "Alex", "Ewa", "Barry", "Daniella"]
+func serveCustomer(customerProvider: () -> String) {
+    print("Now serving \(customerProvider())!")
+}
+serveCustomer({ customersInLine.removeAtIndex(0) })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
