@@ -342,6 +342,94 @@ func chapter5() {
     //Labeled Statements continue和break都可以跳转到指定的标签
 }
 
-chapter5()
+//MARK: Functions chapter6
+func sayHello(personName: String) -> String {
+        return "Hello" + personName;
+}
+print(sayHello("liuwei"))
+//Functions with Multiple Return Values
+func minMax(array: [Int]) -> (min: Int, max: Int)? {
+    var currentMin = array[0]
+    var currentMax = array[0]
+            
+    for value in array[1..<array.count] {
+        if value < currentMin {
+            currentMin = value
+        } else if value > currentMax {
+            currentMax = value
+        }
+    }
+    return (currentMin, currentMax)
+}
+//Function Parameter Names,Specifying External Parameter Names
+//If you provide an external parameter name for a parameter, 
+//that external name must always be used when you call the function.
+func sayHello(to person: String, and anotherPerson: String) -> String {
+    return "Hello \(person) and \(anotherPerson)!"
+}
+print(sayHello(to: "Bill", and: "Ted"))
+        
+//Default Parameter Values
+func someFunction(parameterWithDefault: Int = 12) {
+// function body goes here
+// if no arguments are passed to the function call,
+// value of parameterWithDefault is 12
+}
+someFunction(6) // parameterWithDefault is 6
+someFunction() // parameterWithDefault is 12
+
+//Variadic Parameters可变参数
+func arithmeticMean(numbers: Double...) -> Double {
+    var total: Double = 0
+    for number in numbers {
+        total += number
+    }
+    return total / Double(numbers.count)
+}
+arithmeticMean(1, 2, 3, 4, 5)
+// returns 3.0, which is the arithmetic mean of these five numbers
+arithmeticMean(3, 8.25, 18.75)
+        
+//Constant and Variable Parameters
+//Function parameters are constants by default. 第一个参数定义成变量，可以在函数内部修改
+func alignRight(var string: String, totalLength: Int, pad: Character) -> String {
+    let amountToPad = totalLength - string.characters.count
+    if amountToPad < 1 {
+        return string
+    }
+    let padString = String(pad)
+    for _ in 1...amountToPad {
+        string = padString + string
+    }
+    return string
+}
+let originalString = "hello"
+let paddedString = alignRight(originalString, totalLength: 10, pad: "-")
+        
+//In-Out Parameters
+func swapTwoInts(inout a: Int, inout _ b: Int) {
+    let temporaryA = a
+    a = b
+    b = temporaryA
+}
+var someInt = 3
+var anotherInt = 107
+swapTwoInts(&someInt, &anotherInt)//调用的时候需要使用&
+print("someInt is now \(someInt), and anotherInt is now \(anotherInt)")
+
+//Nested Functions 内嵌函数
+func chooseStepFunction(backwards: Bool) -> (Int) -> Int {
+    func stepForward(input: Int) -> Int { return input + 1 }
+    func stepBackward(input: Int) -> Int { return input - 1 }
+    return backwards ? stepBackward : stepForward
+}
+var currentValue = -4
+let moveNearerToZero = chooseStepFunction(currentValue > 0)
+// moveNearerToZero now refers to the nested stepForward() function
+while currentValue != 0 {
+    print("\(currentValue)... ")
+    currentValue = moveNearerToZero(currentValue)
+}
+print("zero!")
 
 
