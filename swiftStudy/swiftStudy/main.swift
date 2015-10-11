@@ -871,26 +871,257 @@ class mytest: AutomaticCar {
 //Preventing Overrides
 //加final关键字，表示不能被继承或重写
 
+//MARK: Initialization
+//Setting Initial Values for Stored Properties
+//all stored property must set to an appropriate initial value
+
+//Initializers
+struct Fahrenheit {
+    var temperature: Double
+    init() {
+        temperature = 32.0
+    }
+}
+//Default Property Values
+struct Fahrenheit1 {
+    var temperature = 32.0
+}
+
+//Customizing Initialization
+//Initialization Parameters
+struct Celsius {
+    var temperatureInCelsius: Double
+    init(fromFahrenheit fahrenheit: Double) {
+        temperatureInCelsius = (fahrenheit - 32.0) / 1.8
+    }
+    init(fromKelvin kelvin: Double) {
+        temperatureInCelsius = kelvin - 273.15
+    }
+}
+let boilingPointOfWater = Celsius(fromFahrenheit: 212.0)
+let freezingPointOfWater = Celsius(fromKelvin: 273.15)
+//Local and External Parameter Names
+struct Color {
+    let red, green, blue: Double
+    init(red: Double, green: Double, blue: Double) {
+        self.red = red
+        self.green = green
+        self.blue = blue
+    }
+    init(white: Double) {
+        self.red = white
+        self.green = white
+        self.blue = white
+    }
+    init(_ color: Double) {
+        self.red = color
+        self.green = color
+        self.blue = color
+    }
+}
+let mageta = Color(red: 1.0, green: 0.0, blue: 1.0)
+let whiteColor = Color(white: 12.0)
+//let veryGreen = Color(0.0, 1.0, 0.0) //error - external names are required
+//Initializer Parameters Without External Names
+let xxxColor = Color(12.0)
+
+//Optional Property Types
+class SurveyQuestion {
+    var text: String
+    var response: String? //automatically initialized with a value of nil
+    init(text: String) {
+        self.text = text
+    }
+    func ask() {
+        print(text)
+    }
+}
+//Assigning Constant Properties During Initialization
+class SurveyQuestion1 {
+    let text: String //constant, 可以在初始化的时候赋值，以后就不能在被改变了
+    var response: String?
+    init(text: String) {
+        self.text = text
+    }
+    func ask() {
+        print(text)
+    }
+}
+//NOTE:For class instances, a constant property can only be modified during initialization by the class that introduces it. 
+//It cannot be modified by a subclass.
+
+//Default Initializers
+class ShoppingListItem {
+    var name: String?
+    var quantity = 1
+    var purchased = false
+}
+var item = ShoppingListItem()
+
+//Initializer Delegation for Value Types
+//Note that if you define a custom initializer for a value type, 
+//you will no longer have access to the default initializer for that type.
 
 
+//Class Inheritance and Initialization
+//Initializer Delegation for Class Types
+//Swift subclasses do not inherit their superclass initializers by default.
+//默认不继承父类的初始化方法
+class xxVehicle {
+    var numberOfWheels = 0
+    var description: String {
+        return "\(numberOfWheels) wheel(s)"
+    }
+}
+let vehicle = xxVehicle()
+print("Vehicle: \(vehicle.description)")
+class xxBicycle: xxVehicle {
+    override init() {
+        super.init()
+        numberOfWheels = 2
+    }
+}
+//Automatic Initializer Inheritance
+//Rule 1:If your subclass doesn’t define any designated initializers, 
+//it automatically inherits all of its superclass designated initializers.
+//Rule 2:如果通过rule 1或者是实现了父类的所有designated initializers，则会继承所有的convenience initializers
+
+//Designated and Convenience Initializers in Action
+class Food {
+    var name: String
+    init(name: String) {
+        self.name = name
+    }
+    
+    convenience init() {
+        self.init(name: "[Unnamed]")
+    }
+}
+let nameMeat = Food(name: "Bacon")
+let mysteryMeat = Food()
+
+class RecipeIngredient: Food {
+    var quantity: Int
+    init(name: String, quantity: Int) {
+        self.quantity = quantity
+        super.init(name: name)
+    }
+    
+    //重写了所有父类的指定构造器，automatically inherits all of its superclass’s convenience initializers too
+    override convenience init(name: String) {
+        self.init(name: name, quantity: 1)
+    }
+}
+let oneMysteryItem = RecipeIngredient() //use inherits convenience initializers
+let oneBacon = RecipeIngredient(name: "Bacon")
+let sixEggs = RecipeIngredient(name: "eggs", quantity: 6)
+
+//does not define any initializers itself, 
+//ShoppingListItem automatically inherits all of the designated and convenience initializers from its superclass.
+class MyShoppingListItem: RecipeIngredient {
+    var purchased = false
+    var description: String {
+        var output = "\(quantity) x \(name)"
+        output += purchased ? " ✔" : " ✘"
+        return output
+    }
+}
+var breakfastList = [
+    MyShoppingListItem(),
+    MyShoppingListItem(name: "Bacon"),
+    MyShoppingListItem(name: "Eggs", quantity: 6)
+]
+breakfastList[0].name = "Orange juice"
+breakfastList[0].purchased = true
+for item in breakfastList {
+    print(item.description)
+}
+// 1 x Orange juice ✔
+// 1 x Bacon ✘
+// 6 x Eggs ✘
 
 
+//Failable Initializers
+//You cannot define a failable and a nonfailable initializer with the same parameter types and names.
+struct Animal {
+    let species: String
+    init?(species: String) {
+        if species.isEmpty { return nil }
+        self.species = species
+    }
+}
+//Failable Initializers for Enumerations
+//Propagation（传播） of Initialization Failure
+//if the superclass initialization fails because of an empty name value,
+//the entire initialization process fails immediately and no further initialization code is executed
+//Overriding a Failable Initializer
+class Document {
+    var name: String?
+    // this initializer creates a document with a nil name value
+    init() {}
+    // this initializer creates a document with a non-empty name value
+    init?(name: String) {
+        self.name = name
+        if name.isEmpty { return nil }
+    }
+}
 
+class AutomaticallyNamedDocument: Document {
+    override init() {
+        super.init()
+        self.name = "[Untitled]"
+    }
+    override init(name: String) {
+        super.init()
+        if name.isEmpty {
+            self.name = "[Untitled]"
+        } else {
+            self.name = name
+        }
+    }
+}
 
+class UntitledDocument: Document {
+    override init() {
+        super.init(name: "[Untitled]")!
+    }
+}
 
+class Product {
+    let name: String!
+    init?(name: String) {
+        self.name = name
+        if name.isEmpty { return nil }
+    }
+}
+class Cartltem: Product {
+    let quantity: Int!
+    init?(name: String, quantity: Int) {
+        //先初始化自己的，再初始化父类的，在判断是否失败
+        self.quantity = quantity
+        super.init(name: name)
+        if quantity < 1 { return nil }
+    }
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
+//Setting a Default Property Value with a Closure or Function
+struct Checkerboard {
+    let boardColors: [Bool] = {
+        var temporaryBoard = [Bool]()
+        var isBlack = false
+        for i in 1...10 {
+            for j in 1...10 {
+                temporaryBoard.append(isBlack)
+                isBlack = !isBlack
+            }
+            isBlack = !isBlack
+        }
+        return temporaryBoard
+        }()
+    func squareIsBlackAtRow(row: Int, column: Int) -> Bool {
+        return boardColors[(row * 10) + column]
+    }
+}
 
 
 
