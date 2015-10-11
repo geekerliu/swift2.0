@@ -1154,6 +1154,137 @@ print("Back = \(Bank.coinsInBank),playerOne = \(playerOne!.coinsInPurse)")
 playerOne = nil //此处调用析构方法
 print("Back = \(Bank.coinsInBank)")
 
+//MARK: Automatic Reference Counting
+class Person {
+    let name: String
+    init(name: String) {
+        self.name = name
+        print("\(name) is being initialized")
+    }
+    deinit {
+        print("\(name) is being deinitialized")
+    }
+}
+var reference1: Person?
+var reference2: Person?
+var reference3: Person?
+reference1 = Person(name: "John Appleseed")
+reference2 = reference1
+reference3 = reference1
+reference1 = nil
+reference2 = nil
+reference3 = nil //直到这里才释放
+
+//Strong Reference Cycles Between Class Instances
+//This can happen if two class instances hold a strong reference to each other
+class Person1 {
+    let name: String
+    init(name: String) { self.name = name }
+    var apartment: Apartment?
+    deinit { print("\(name) is being deinitialized") }
+}
+
+class Apartment {
+    let unit: String
+    init(unit: String) { self.unit = unit }
+    weak var tenant: Person1? //use weak
+    deinit { print("Apartment \(unit) is being deinitialized") }
+}
+var john: Person1?
+var uint4A: Apartment?
+john = Person1(name: "John Applessed")
+uint4A = Apartment(unit: "4A")
+
+john!.apartment = uint4A
+uint4A!.tenant = john //产生了循环引用
+
+john = nil
+uint4A = nil //内存不会被释放
+//解决办法使用weak 或者 unowned references
+//如果引用的对象在生命周期类可能变为nil则使用weak，如果引用的对象在被创建后不会变为空则使用unowned
+class Customer {
+    let name: String
+    var card: CreditCard?
+    init(name: String) {
+        self.name = name
+    }
+    deinit { print("\(name) is being deinitialized") }
+}
+
+class CreditCard {
+    let number: UInt64
+    unowned let customer: Customer //使用unowned
+    init(number: UInt64, customer: Customer) {
+        self.number = number
+        self.customer = customer
+    }
+    deinit { print("Card #\(number) is being deinitialized") }
+}
+var usopp: Customer?
+usopp = Customer(name: "Usopp")
+usopp!.card = CreditCard(number: 1234_5678_9012_3456, customer: usopp!)
+usopp = nil //都被释放了
+
+//*****重点理解******
+class Country {
+    let name: String
+    var capitalCity: City!
+    init(name: String, capitalName: String) {
+        self.name = name
+        //因为capitalCity是可选类型，默认初始化为nil，所以至此整个类初始化完毕
+        //可以将self传递给City的构造函数了
+        self.capitalCity = City(name: capitalName, country: self)
+    }
+}
+
+class City {
+    let name: String
+    unowned let country: Country
+    init(name: String, country: Country) {
+        self.name = name
+        self.country = country
+    }
+}
+
+//Strong Reference Cycles for Closures
+class HTMLElement {
+    let name: String
+    let text: String?
+    
+    lazy var asHTML: Void -> String = {
+        [unowned self] in //解决循环引用，不对实例对象生成强引用
+        if let text = self.text {
+            return "<\(self.name)>\(text)</\(self.name)>"
+        } else {
+            return "<\(self.name) />"
+        }
+    }
+    
+    init(name: String, text: String? = nil) {
+        self.name = name
+        self.text = text
+    }
+    
+    deinit {
+        print("\(name) is being deinitialized")
+    }
+}
+var paragraph: HTMLElement? = HTMLElement(name: "p", text: "hello, world")
+print(paragraph!.asHTML)
+paragraph = nil
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
