@@ -1123,6 +1123,37 @@ struct Checkerboard {
     }
 }
 
+//MARK: 析构器
+class Bank {
+    static var coinsInBank = 10_000
+    static func vendCoins(var numberOfCoinsToVend: Int) -> Int {
+        numberOfCoinsToVend = min(numberOfCoinsToVend, coinsInBank)
+        coinsInBank -= numberOfCoinsToVend
+        return numberOfCoinsToVend
+    }
+    static func receiveCoins(coins: Int) {
+        coinsInBank += coins
+    }
+}
+class Player {
+    var coinsInPurse: Int
+    init(coins: Int) {
+        coinsInPurse = Bank.vendCoins(coins)
+    }
+    func winCoins(coins: Int) {
+        coinsInPurse += Bank.vendCoins(coins)
+    }
+    deinit {
+        print("player 退出了")
+        Bank.receiveCoins(coinsInPurse)
+    }
+}
+var playerOne: Player? = Player(coins: 100)
+playerOne!.winCoins(2000)
+print("Back = \(Bank.coinsInBank),playerOne = \(playerOne!.coinsInPurse)")
+playerOne = nil //此处调用析构方法
+print("Back = \(Bank.coinsInBank)")
+
 
 
 
