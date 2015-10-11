@@ -808,6 +808,83 @@ struct Matrix {
     }
 }
 
+//MARK: Inheritance
+class Vehicle {
+    var currentSpeed = 0.0
+    var description: String {
+        return "traveling at \(currentSpeed) miles per hour"
+    }
+    
+    func makeNoise() {
+        //do nothing
+    }
+}
+
+class Bicycle: Vehicle {
+    var hsaBasket = false
+}
+
+class Tandem: Bicycle {
+    var currentNumberOfPassengers = 0
+}
+
+//overiding
+//Accessing Superclass Methods, Properties, and Subscripts
+//super.someMethod() super.someProperty super[someIndex]
+
+//overriding Methods
+class Train: Vehicle {
+    override func makeNoise() {
+        print("Choo Choo")
+    }
+}
+
+//Overriding Properties
+//继承下来的read-only property可以改写成读写的，继续的读写的属性不能改成只读的
+//Overriding Property Getters and Setters
+class Car: Vehicle {
+    var gear = 1
+    override var description: String {
+        return super.description + " in gear \(gear)"
+    }
+}
+//Overriding Property Observers
+//NOTE: 1.cannot add property observers to inherited constant stored properties or inherited read-only computed properties
+//2.你不可以同时提供重写的 setter 和重写的属性观察器。如果你想观察属性值的变化,
+//并且你已经为那个属性提供了定制的 setter,那么你在 setter 中就可以观察到任何值变化了。
+class AutomaticCar: Car {
+    override var currentSpeed: Double {
+        didSet {
+            gear = Int(currentSpeed / 10.0) + 1
+        }
+    }
+}
+
+class mytest: AutomaticCar {
+    override var currentSpeed: Double {
+        didSet {
+            gear = Int(currentSpeed / 10.0) + 2
+        }
+    }
+}
+
+//Preventing Overrides
+//加final关键字，表示不能被继承或重写
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
